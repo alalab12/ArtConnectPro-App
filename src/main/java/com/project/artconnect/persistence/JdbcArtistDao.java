@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class JdbcArtistDao implements ArtistDao {
 
-    // ── findAll ───────────────────────────────────────────────────────────────
 
     @Override
     public List<Artist> findAll() {
@@ -46,7 +45,7 @@ public class JdbcArtistDao implements ArtistDao {
         return new ArrayList<>(map.values());
     }
 
-    // ── findByCity ────────────────────────────────────────────────────────────
+   
 
     @Override
     public List<Artist> findByCity(String city) {
@@ -81,7 +80,7 @@ public class JdbcArtistDao implements ArtistDao {
         return new ArrayList<>(map.values());
     }
 
-    // ── save ──────────────────────────────────────────────────────────────────
+   
 
     @Override
     public void save(Artist artist) {
@@ -118,7 +117,7 @@ public class JdbcArtistDao implements ArtistDao {
         }
     }
 
-    // ── update ────────────────────────────────────────────────────────────────
+  
 
     @Override
     public void update(Artist artist) {
@@ -165,7 +164,7 @@ public class JdbcArtistDao implements ArtistDao {
         }
     }
 
-    // ── delete ────────────────────────────────────────────────────────────────
+    
 
     @Override
     public void delete(String artistName) {
@@ -179,7 +178,7 @@ public class JdbcArtistDao implements ArtistDao {
         }
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+  
 
     /** Mappe la ligne courante du ResultSet en objet Artist (sans disciplines). */
     private Artist mapRow(ResultSet rs) {
@@ -213,10 +212,7 @@ public class JdbcArtistDao implements ArtistDao {
         ps.setBoolean(9, a.isActive());
     }
 
-    /**
-     * Insère ou retrouve chaque discipline et crée la liaison dans
-     * {@code artist_discipline}.
-     */
+  
     private void saveDisciplineLinks(Connection conn, long artistId,
                                      List<Discipline> disciplines) throws SQLException {
         final String upsertDisc = "INSERT IGNORE INTO discipline (name) VALUES (?)";
@@ -247,7 +243,7 @@ public class JdbcArtistDao implements ArtistDao {
         }
     }
 
-    /** Retourne l'id interne d'un artiste par son nom, ou -1 si absent. */
+   
     private long findIdByName(Connection conn, String name) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
                 "SELECT id FROM artist WHERE name=?")) {
