@@ -11,12 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Implémentation JDBC de {@link ArtworkDao}.
- *
- * <p>La jointure avec la table {@code artist} permet de reconstruire l'objet
- * {@link Artist} référencé par chaque {@link Artwork}.</p>
- */
+
 public class JdbcArtworkDao implements ArtworkDao {
 
     private static final String SELECT_BASE =
@@ -28,7 +23,7 @@ public class JdbcArtworkDao implements ArtworkDao {
         "FROM artwork aw " +
         "LEFT JOIN artist ar ON ar.id = aw.artist_id ";
 
-    // ── findAll ───────────────────────────────────────────────────────────────
+   
 
     @Override
     public List<Artwork> findAll() {
@@ -46,7 +41,7 @@ public class JdbcArtworkDao implements ArtworkDao {
         return results;
     }
 
-    // ── findByArtistName ──────────────────────────────────────────────────────
+  
 
     @Override
     public List<Artwork> findByArtistName(String artistName) {
@@ -65,8 +60,7 @@ public class JdbcArtworkDao implements ArtworkDao {
         return results;
     }
 
-    // ── save ──────────────────────────────────────────────────────────────────
-
+ 
     @Override
     public void save(Artwork artwork) {
         final String sql =
@@ -85,7 +79,7 @@ public class JdbcArtworkDao implements ArtworkDao {
         }
     }
 
-    // ── update ────────────────────────────────────────────────────────────────
+    
 
     @Override
     public void update(Artwork artwork) {
@@ -113,7 +107,7 @@ public class JdbcArtworkDao implements ArtworkDao {
         }
     }
 
-    // ── delete ────────────────────────────────────────────────────────────────
+ 
 
     @Override
     public void delete(String title) {
@@ -127,8 +121,7 @@ public class JdbcArtworkDao implements ArtworkDao {
         }
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
-
+   
     private Artwork mapRow(ResultSet rs) throws SQLException {
         Artwork aw = new Artwork();
         aw.setTitle(rs.getString("title"));
