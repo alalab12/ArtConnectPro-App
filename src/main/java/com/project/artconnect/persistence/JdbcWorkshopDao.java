@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Implémentation JDBC de {@link WorkshopDao}.
- */
+
 public class JdbcWorkshopDao implements WorkshopDao {
 
     private static final String SELECT_BASE =
@@ -49,7 +47,7 @@ public class JdbcWorkshopDao implements WorkshopDao {
         return results;
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+  
 
     private Workshop mapRow(ResultSet rs) throws SQLException {
         Workshop w = new Workshop();
