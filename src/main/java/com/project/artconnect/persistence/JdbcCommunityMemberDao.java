@@ -8,9 +8,7 @@ import com.project.artconnect.util.ConnectionManager;
 import java.sql.*;
 import java.util.*;
 
-/**
- * Implémentation JDBC de {@link CommunityMemberDao}.
- */
+
 public class JdbcCommunityMemberDao implements CommunityMemberDao {
 
     @Override
@@ -39,7 +37,7 @@ public class JdbcCommunityMemberDao implements CommunityMemberDao {
         }
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    
 
     private String buildSql() {
         return
