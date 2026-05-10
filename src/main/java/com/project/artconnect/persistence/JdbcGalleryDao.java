@@ -9,12 +9,7 @@ import com.project.artconnect.util.ConnectionManager;
 import java.sql.*;
 import java.util.*;
 
-/**
- * Implémentation JDBC de {@link GalleryDao}.
- *
- * <p>Charge les galeries avec leurs expositions et les œuvres liées en
- * effectuant des jointures LEFT JOIN pour reconstruire le graphe d'objets.</p>
- */
+
 public class JdbcGalleryDao implements GalleryDao {
 
     @Override
@@ -37,7 +32,7 @@ public class JdbcGalleryDao implements GalleryDao {
         return results;
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+   
 
     private String buildSelectSql() {
         return
@@ -66,10 +61,7 @@ public class JdbcGalleryDao implements GalleryDao {
         }
     }
 
-    /**
-     * Construit une Map Gallery → Exhibition → Artworks depuis le ResultSet à
-     * plat produit par les jointures LEFT JOIN.
-     */
+  
     private List<Gallery> mapGalleries(ResultSet rs) throws SQLException {
         Map<Long, Gallery>     galleries   = new LinkedHashMap<>();
         Map<Long, Exhibition>  exhibitions = new LinkedHashMap<>();
@@ -82,7 +74,7 @@ public class JdbcGalleryDao implements GalleryDao {
             });
 
             long eId = rs.getLong("e_id");
-            if (rs.wasNull()) continue;  // pas d'exposition pour cette galerie
+            if (rs.wasNull()) continue;  
 
             Exhibition ex = exhibitions.computeIfAbsent(eId, k -> {
                 try {
