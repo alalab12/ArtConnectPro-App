@@ -12,9 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Implémentation JDBC de {@link ExhibitionDao}.
- */
+
 public class JdbcExhibitionDao implements ExhibitionDao {
 
     private static final String SELECT_BASE =
@@ -27,7 +25,7 @@ public class JdbcExhibitionDao implements ExhibitionDao {
         "LEFT JOIN exhibition_artwork ea ON ea.exhibition_id = e.id " +
         "LEFT JOIN artwork aw ON aw.id = ea.artwork_id ";
 
-    // ── findAll ───────────────────────────────────────────────────────────────
+    
 
     @Override
     public List<Exhibition> findAll() {
@@ -42,7 +40,7 @@ public class JdbcExhibitionDao implements ExhibitionDao {
         return results;
     }
 
-    // ── save ──────────────────────────────────────────────────────────────────
+   
 
     @Override
     public void save(Exhibition exhibition) {
@@ -77,7 +75,7 @@ public class JdbcExhibitionDao implements ExhibitionDao {
         }
     }
 
-    // ── update ────────────────────────────────────────────────────────────────
+    
 
     @Override
     public void update(Exhibition exhibition) {
@@ -124,7 +122,7 @@ public class JdbcExhibitionDao implements ExhibitionDao {
         }
     }
 
-    // ── delete ────────────────────────────────────────────────────────────────
+    
 
     @Override
     public void delete(String title) {
@@ -138,7 +136,7 @@ public class JdbcExhibitionDao implements ExhibitionDao {
         }
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    
 
     private List<Exhibition> mapExhibitions(ResultSet rs) throws SQLException {
         Map<Long, Exhibition> map = new LinkedHashMap<>();
