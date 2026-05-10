@@ -1,7 +1,4 @@
--- =============================================================================
---  ArtConnect Pro – Script de création de la base de données MySQL
---  Exécuter : mysql -u root -p < artconnect_schema.sql
--- =============================================================================
+
 
 CREATE DATABASE IF NOT EXISTS artconnect_db
     CHARACTER SET utf8mb4
@@ -9,17 +6,12 @@ CREATE DATABASE IF NOT EXISTS artconnect_db
 
 USE artconnect_db;
 
--- ---------------------------------------------------------------------------
--- 1. discipline
--- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS discipline (
     id   BIGINT       AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
--- ---------------------------------------------------------------------------
--- 2. artist
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artist (
     id             BIGINT        AUTO_INCREMENT PRIMARY KEY,
     name           VARCHAR(200)  NOT NULL UNIQUE,
@@ -33,9 +25,7 @@ CREATE TABLE IF NOT EXISTS artist (
     is_active      TINYINT(1)    NOT NULL DEFAULT 1
 );
 
--- ---------------------------------------------------------------------------
--- 3. artist_discipline  (N–N)
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artist_discipline (
     artist_id     BIGINT NOT NULL,
     discipline_id BIGINT NOT NULL,
@@ -44,9 +34,7 @@ CREATE TABLE IF NOT EXISTS artist_discipline (
     FOREIGN KEY (discipline_id) REFERENCES discipline(id) ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 4. artwork
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artwork (
     id            BIGINT        AUTO_INCREMENT PRIMARY KEY,
     title         VARCHAR(300)  NOT NULL,
@@ -62,9 +50,7 @@ CREATE TABLE IF NOT EXISTS artwork (
     FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 5. artwork_tag
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artwork_tag (
     id         BIGINT       AUTO_INCREMENT PRIMARY KEY,
     artwork_id BIGINT       NOT NULL,
@@ -72,9 +58,7 @@ CREATE TABLE IF NOT EXISTS artwork_tag (
     FOREIGN KEY (artwork_id) REFERENCES artwork(id) ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 6. gallery
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS gallery (
     id            BIGINT        AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(200)  NOT NULL UNIQUE,
@@ -86,9 +70,7 @@ CREATE TABLE IF NOT EXISTS gallery (
     website       VARCHAR(300)
 );
 
--- ---------------------------------------------------------------------------
--- 7. exhibition
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS exhibition (
     id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
     title        VARCHAR(300) NOT NULL UNIQUE,
@@ -101,9 +83,7 @@ CREATE TABLE IF NOT EXISTS exhibition (
     FOREIGN KEY (gallery_id) REFERENCES gallery(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 8. exhibition_artwork  (N–N)
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS exhibition_artwork (
     exhibition_id BIGINT NOT NULL,
     artwork_id    BIGINT NOT NULL,
@@ -112,9 +92,7 @@ CREATE TABLE IF NOT EXISTS exhibition_artwork (
     FOREIGN KEY (artwork_id)    REFERENCES artwork(id)    ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 9. workshop
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS workshop (
     id               BIGINT        AUTO_INCREMENT PRIMARY KEY,
     title            VARCHAR(300)  NOT NULL UNIQUE,
@@ -129,9 +107,7 @@ CREATE TABLE IF NOT EXISTS workshop (
     FOREIGN KEY (instructor_id) REFERENCES artist(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 10. community_member
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS community_member (
     id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
     name            VARCHAR(200) NOT NULL UNIQUE,
@@ -142,9 +118,7 @@ CREATE TABLE IF NOT EXISTS community_member (
     membership_type VARCHAR(50)  DEFAULT 'free'
 );
 
--- ---------------------------------------------------------------------------
--- 11. member_discipline  (N–N)
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS member_discipline (
     member_id     BIGINT NOT NULL,
     discipline_id BIGINT NOT NULL,
@@ -153,9 +127,7 @@ CREATE TABLE IF NOT EXISTS member_discipline (
     FOREIGN KEY (discipline_id) REFERENCES discipline(id)       ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 12. booking
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS booking (
     id             BIGINT      AUTO_INCREMENT PRIMARY KEY,
     workshop_id    BIGINT,
@@ -166,9 +138,7 @@ CREATE TABLE IF NOT EXISTS booking (
     FOREIGN KEY (member_id)   REFERENCES community_member(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 13. review
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS review (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id   BIGINT,
@@ -180,9 +150,7 @@ CREATE TABLE IF NOT EXISTS review (
     FOREIGN KEY (artwork_id) REFERENCES artwork(id)          ON DELETE SET NULL
 );
 
--- =============================================================================
---  Données de démonstration
--- =============================================================================
+
 
 -- disciplines
 INSERT IGNORE INTO discipline (name) VALUES
