@@ -133,7 +133,6 @@ CREATE TABLE Booking (
 );
 
 
-
 -- =============================================================================
 --  Données de démonstration
 -- =============================================================================
@@ -203,5 +202,153 @@ INSERT INTO Booking (bookingDate, paymentStatus, member_id, workshop_id) VALUES
 ('2026-05-21 11:30:00', 'PAID', 2, 1),
 ('2026-05-22 15:45:00', 'PENDING', 3, 1),
 ('2026-06-01 09:00:00', 'PAID', 1, 2);
+
+
+-- =============================================================================
+--  Vues, indexes, déclencheurs et procédures/fonctions stockées
+-- =============================================================================
+
+-- 1. Vues
+
+CREATE VIEW Active_Artworks_For_Sale AS
+SELECT a.artwork_id, a.title, a.price, a.medium, art.name AS artist_name, art.city
+FROM Artwork a
+JOIN Artist art ON a.artist_id = art.artist_id
+WHERE a.status = 'FOR_SALE' AND art.isActive = TRUE;
+
+CREATE VIEW Workshop_Availability AS
+SELECT w.workshop_id, w.title, w.startTime, w.maxParticipants,
+       COUNT(b.booking_id) AS currentBookings,
+       (w.maxParticipants - COUNT(b.booking_id)) AS availableSeats
+FROM Workshop w
+LEFT JOIN Booking b ON w.workshop_id = b.workshop_id
+GROUP BY w.workshop_id, w.title, w.startTime, w.maxParticipants;
+
+CREATE VIEW VW_Exhibition_Details AS
+SELECT e.exhibition_id, e.title AS exhibition_title, e.startDate, e.endDate,
+       g.name AS gallery_name, g.location AS gallery_location
+FROM Exhibition e
+JOIN Gallery g ON e.gallery_id = g.gallery_id;
+
+-- 2. Indexes
+
+CREATE INDEX idx_artwork_status ON Artwork(status);
+
+CREATE INDEX idx_artist_name ON Artist(name);
+
+CREATE INDEX idx_workshop_start ON Workshop(startTime);
+
+-- 3. Déclencheurs
+
+DELIMITER //
+
+CREATE TRIGGER Check_Dates_Exhibition
+BEFORE INSERT ON Exhibition
+FOR EACH ROW
+BEGIN
+    IF NEW.endDate < NEW.startDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La date de fin ne peut pas être antérieure à la date de début.';
+    END IF;
+END //
+
+CREATE TRIGGER Prevent_Overbooking
+BEFORE INSERT ON Booking
+FOR EACH ROW
+BEGIN
+    DECLARE v_currentBookings INT;
+    DECLARE v_maxParticipants INT;
+    
+    SELECT COUNT(*) INTO v_currentBookings FROM Booking WHERE workshop_id = NEW.workshop_id;
+    SELECT maxParticipants INTO v_maxParticipants FROM Workshop WHERE workshop_id = NEW.workshop_id;
+    
+    IF v_currentBookings >= v_maxParticipants THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Impossible de réserver : cet atelier est complet.';
+    END IF;
+END //
+
+CREATE TRIGGER TRG_Set_Booking_Date
+BEFORE INSERT ON Booking
+FOR EACH ROW
+BEGIN
+    IF NEW.bookingDate IS NULL THEN
+        SET NEW.bookingDate = NOW();
+    END IF;
+END //
+
+DELIMITER ;
+
+-- 4. Procédures/fonctions stockées
+
+DELIMITER //
+
+CREATE FUNCTION FN_Get_Remaining_Seats(p_workshop_id INT) 
+RETURNS INT READS SQL DATA
+BEGIN
+    DECLARE v_max INT;
+    DECLARE v_booked INT;
+    
+    SELECT maxParticipants INTO v_max FROM Workshop WHERE workshop_id = p_workshop_id;
+    SELECT COUNT(*) INTO v_booked FROM Booking WHERE workshop_id = p_workshop_id;
+    
+    RETURN (v_max - v_booked);
+END //
+
+CREATE PROCEDURE SP_Update_Artwork_Status(IN p_artwork_id INT, IN p_new_status VARCHAR(50))
+BEGIN
+    UPDATE Artwork 
+    SET status = p_new_status 
+    WHERE artwork_id = p_artwork_id;
+END //
+
+DELIMITER ;
+
+-- =============================================================================
+--  Script de test des transactions
+-- =============================================================================
+
+DELIMITER //
+
+CREATE PROCEDURE SP_Handle_Sale_And_Booking()
+BEGIN
+    DECLARE v_artwork_status VARCHAR(50);
+
+    START TRANSACTION;
+
+    SET @v_member_id = 1;
+    SET @v_artwork_id = 4; 
+    SET @v_workshop_id = 2;
+
+    SELECT status INTO v_artwork_status
+    FROM Artwork
+    WHERE artwork_id = @v_artwork_id
+    FOR UPDATE;
+
+    IF v_artwork_status != 'FOR_SALE' THEN
+        ROLLBACK;
+    ELSE
+        UPDATE Artwork
+        SET status = 'SOLD'
+        WHERE artwork_id = @v_artwork_id;
+
+        INSERT INTO Booking (
+            bookingDate,
+            paymentStatus,
+            member_id,
+            workshop_id
+        )
+        VALUES (
+            NOW(),
+            'PAID',
+            @v_member_id,
+            @v_workshop_id
+        );
+
+        COMMIT;
+    END IF;
+END //
+
+DELIMITER ;
 
 
