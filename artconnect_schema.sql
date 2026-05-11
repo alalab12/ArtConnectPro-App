@@ -3,155 +3,135 @@
 --  Exécuter : mysql -u root -p < artconnect_schema.sql
 -- =============================================================================
 
-CREATE DATABASE IF NOT EXISTS artconnect_db
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
+DROP DATABASE IF EXISTS ArtConnect;
+CREATE DATABASE ArtConnect;
 
-USE artconnect_db;
+USE ArtConnect;
 
-CREATE TABLE IF NOT EXISTS discipline (
-    id   BIGINT       AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE Artist (
+artist_id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+bio TEXT,
+birthYear INT,
+contactEmail VARCHAR(100),
+phone VARCHAR(30),
+city VARCHAR(100),
+website VARCHAR(255),
+socialMedia VARCHAR(255),
+  	isActive BOOLEAN
 );
 
-
-CREATE TABLE IF NOT EXISTS artist (
-    id             BIGINT        AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(200)  NOT NULL UNIQUE,
-    bio            TEXT,
-    birth_year     INT,
-    contact_email  VARCHAR(200),
-    phone          VARCHAR(50),
-    city           VARCHAR(100),
-    website        VARCHAR(300),
-    social_media   VARCHAR(300),
-    is_active      TINYINT(1)    NOT NULL DEFAULT 1
+CREATE TABLE Discipline (
+ 	discipline_id INT AUTO_INCREMENT PRIMARY KEY,
+  	name VARCHAR(100) NOT NULL
 );
 
-
-CREATE TABLE IF NOT EXISTS artist_discipline (
-    artist_id     BIGINT NOT NULL,
-    discipline_id BIGINT NOT NULL,
-    PRIMARY KEY (artist_id, discipline_id),
-    FOREIGN KEY (artist_id)     REFERENCES artist(id)     ON DELETE CASCADE,
-    FOREIGN KEY (discipline_id) REFERENCES discipline(id) ON DELETE CASCADE
+CREATE TABLE Artist_Discipline (
+  	artist_id INT,
+discipline_id INT,
+  	PRIMARY KEY (artist_id, discipline_id),
+  	FOREIGN KEY (artist_id) REFERENCES Artist(artist_id),
+  	FOREIGN KEY (discipline_id) REFERENCES Discipline(discipline_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS artwork (
-    id            BIGINT        AUTO_INCREMENT PRIMARY KEY,
-    title         VARCHAR(300)  NOT NULL,
-    creation_year INT,
-    type          VARCHAR(100),
-    medium        VARCHAR(200),
-    dimensions    VARCHAR(200),
-    description   TEXT,
-    price         DECIMAL(15,2) DEFAULT 0,
-    status        VARCHAR(20)   NOT NULL DEFAULT 'FOR_SALE',
-    artist_id     BIGINT,
-    UNIQUE KEY uq_artwork_title (title),
-    FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE SET NULL
+CREATE TABLE Artwork (
+  	artwork_id INT AUTO_INCREMENT PRIMARY KEY,
+  	artist_id INT NOT NULL,
+  	title VARCHAR(200),
+  	creationYear INT,
+  	type VARCHAR(100),
+  	medium VARCHAR(100),
+  	dimensions VARCHAR(100),
+  	description TEXT,
+  	price DECIMAL(10 ,2),
+  	status ENUM('FOR_SALE', 'SOLD', 'EXHIBITED'),
+  	FOREIGN KEY (artist_id) REFERENCES Artist(artist_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS artwork_tag (
-    id         BIGINT       AUTO_INCREMENT PRIMARY KEY,
-    artwork_id BIGINT       NOT NULL,
-    tag_name   VARCHAR(100) NOT NULL,
-    FOREIGN KEY (artwork_id) REFERENCES artwork(id) ON DELETE CASCADE
+CREATE TABLE ArtworkTag (
+  	tag_id INT AUTO_INCREMENT PRIMARY KEY,
+  	name VARCHAR(100)
 );
 
-
-CREATE TABLE IF NOT EXISTS gallery (
-    id            BIGINT        AUTO_INCREMENT PRIMARY KEY,
-    name          VARCHAR(200)  NOT NULL UNIQUE,
-    address       VARCHAR(400),
-    owner_name    VARCHAR(200),
-    opening_hours VARCHAR(200),
-    contact_phone VARCHAR(50),
-    rating        DECIMAL(3,2)  DEFAULT 0,
-    website       VARCHAR(300)
+CREATE TABLE Artwork_Tag (
+  	artwork_id INT,
+  	tag_id INT,
+  	PRIMARY KEY (artwork_id, tag_id),
+  	FOREIGN KEY (artwork_id) REFERENCES Artwork(artwork_id),
+  	FOREIGN KEY (tag_id) REFERENCES ArtworkTag(tag_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS exhibition (
-    id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
-    title        VARCHAR(300) NOT NULL UNIQUE,
-    start_date   DATE,
-    end_date     DATE,
-    description  TEXT,
-    gallery_id   BIGINT,
-    curator_name VARCHAR(200),
-    theme        VARCHAR(200),
-    FOREIGN KEY (gallery_id) REFERENCES gallery(id) ON DELETE SET NULL
+CREATE TABLE Gallery (
+  	gallery_id INT AUTO_INCREMENT PRIMARY KEY,
+  	name VARCHAR(150),
+  	location VARCHAR(255),
+  	capacity INT,
+  	contactEmail VARCHAR(100),
+  	phone VARCHAR(30),
+  	rating DOUBLE
 );
 
-
-CREATE TABLE IF NOT EXISTS exhibition_artwork (
-    exhibition_id BIGINT NOT NULL,
-    artwork_id    BIGINT NOT NULL,
-    PRIMARY KEY (exhibition_id, artwork_id),
-    FOREIGN KEY (exhibition_id) REFERENCES exhibition(id) ON DELETE CASCADE,
-    FOREIGN KEY (artwork_id)    REFERENCES artwork(id)    ON DELETE CASCADE
+CREATE TABLE Exhibition (
+  	exhibition_id INT AUTO_INCREMENT PRIMARY KEY,
+  	title VARCHAR(200),
+  	description TEXT,
+  	startDate DATE,
+  	endDate DATE,
+  	gallery_id INT,
+  	FOREIGN KEY (gallery_id) REFERENCES Gallery(gallery_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS workshop (
-    id               BIGINT        AUTO_INCREMENT PRIMARY KEY,
-    title            VARCHAR(300)  NOT NULL UNIQUE,
-    date_time        DATETIME,
-    duration_minutes INT           DEFAULT 60,
-    max_participants INT           DEFAULT 10,
-    price            DECIMAL(10,2) DEFAULT 0,
-    instructor_id    BIGINT,
-    location         VARCHAR(300),
-    description      TEXT,
-    level            VARCHAR(50),
-    FOREIGN KEY (instructor_id) REFERENCES artist(id) ON DELETE SET NULL
+CREATE TABLE Artwork_Exhibition (
+  	artwork_id INT,
+  	exhibition_id INT,
+  	PRIMARY KEY (artwork_id, exhibition_id),
+  	FOREIGN KEY (artwork_id) REFERENCES Artwork(artwork_id),
+  	FOREIGN KEY (exhibition_id) REFERENCES Exhibition(exhibition_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS community_member (
-    id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(200) NOT NULL UNIQUE,
-    email           VARCHAR(200),
-    birth_year      INT,
-    phone           VARCHAR(50),
-    city            VARCHAR(100),
-    membership_type VARCHAR(50)  DEFAULT 'free'
+CREATE TABLE CommunityMember (
+  	member_id INT AUTO_INCREMENT PRIMARY KEY,
+  	name VARCHAR(100),
+  	email VARCHAR(100) UNIQUE,
+  	birthYear INT,
+  	phone VARCHAR(30),
+  	city VARCHAR(100),
+  	membershipType VARCHAR(50)
 );
 
-
-CREATE TABLE IF NOT EXISTS member_discipline (
-    member_id     BIGINT NOT NULL,
-    discipline_id BIGINT NOT NULL,
-    PRIMARY KEY (member_id, discipline_id),
-    FOREIGN KEY (member_id)     REFERENCES community_member(id) ON DELETE CASCADE,
-    FOREIGN KEY (discipline_id) REFERENCES discipline(id)       ON DELETE CASCADE
+CREATE TABLE Review (
+  	review_id INT AUTO_INCREMENT PRIMARY KEY,
+  	rating INT CHECK (rating BETWEEN 1 AND 5),
+  	comment TEXT,
+  	reviewDate DATE,
+  	member_id INT,
+  	exhibition_id INT,
+  	FOREIGN KEY (member_id) REFERENCES CommunityMember(member_id),
+  	FOREIGN KEY (exhibition_id) REFERENCES Exhibition(exhibition_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS booking (
-    id             BIGINT      AUTO_INCREMENT PRIMARY KEY,
-    workshop_id    BIGINT,
-    member_id      BIGINT,
-    booking_date   DATETIME    DEFAULT CURRENT_TIMESTAMP,
-    payment_status VARCHAR(20) DEFAULT 'PENDING',
-    FOREIGN KEY (workshop_id) REFERENCES workshop(id)         ON DELETE SET NULL,
-    FOREIGN KEY (member_id)   REFERENCES community_member(id) ON DELETE SET NULL
+CREATE TABLE Workshop (
+  	workshop_id INT AUTO_INCREMENT PRIMARY KEY,
+  	title VARCHAR(200),
+  	description TEXT,
+  	startTime DATETIME,
+  	durationHours INT,
+  	maxParticipants INT,
+  	price DECIMAL(10,2),
+  	instructor_id INT,
+  	FOREIGN KEY (instructor_id) REFERENCES Artist(artist_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS review (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    member_id   BIGINT,
-    artwork_id  BIGINT,
-    rating      INT  CHECK (rating BETWEEN 1 AND 5),
-    comment     TEXT,
-    review_date DATE DEFAULT (CURRENT_DATE),
-    FOREIGN KEY (member_id)  REFERENCES community_member(id) ON DELETE SET NULL,
-    FOREIGN KEY (artwork_id) REFERENCES artwork(id)          ON DELETE SET NULL
+CREATE TABLE Booking (
+  	booking_id INT AUTO_INCREMENT PRIMARY KEY,
+  	bookingDate DATETIME,
+  	paymentStatus VARCHAR(50),
+  	member_id INT,
+  	workshop_id INT,
+  	FOREIGN KEY (member_id) REFERENCES CommunityMember(member_id),
+  	FOREIGN KEY (workshop_id) REFERENCES Workshop(workshop_id)
 );
+
 
 
 -- =============================================================================
