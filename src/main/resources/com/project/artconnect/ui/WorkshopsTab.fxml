@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="8" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.project.artconnect.ui.WorkshopController">
+  <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+
+  <Label text="Workshops" style="-fx-font-size:16;-fx-font-weight:bold;"/>
+
+  <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+    <TableView fx:id="workshopTable" HBox.hgrow="ALWAYS" onMouseClicked="#handleTableClick">
+      <columns>
+        <TableColumn fx:id="titleColumn"      text="Titre"        prefWidth="200"/>
+        <TableColumn fx:id="instructorColumn" text="Instructeur"  prefWidth="140"/>
+        <TableColumn fx:id="dateColumn"       text="Date"         prefWidth="130"/>
+        <TableColumn fx:id="durationColumn"   text="Durée (h)"    prefWidth="80"/>
+        <TableColumn fx:id="spotsColumn"      text="Places"       prefWidth="70"/>
+        <TableColumn fx:id="priceColumn"      text="Prix (€)"     prefWidth="80"/>
+      </columns>
+    </TableView>
+
+    <!-- Panneau détail -->
+    <VBox spacing="8" prefWidth="290" minWidth="270"
+          style="-fx-background-color:#f5f5f5;-fx-border-color:#ddd;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:12;">
+      <Label text="Workshop Details" style="-fx-font-size:15;-fx-font-weight:bold;-fx-text-fill:#333;"/>
+      <Separator/>
+      <Label fx:id="detailTitle"       text="—" style="-fx-font-weight:bold;-fx-font-size:13;"/>
+      <Label fx:id="detailInstructor"  text="Instructeur: —"   wrapText="true"/>
+      <Label fx:id="detailDate"        text="Date: —"/>
+      <Label fx:id="detailDuration"    text="Durée: —"/>
+      <Label fx:id="detailPrice"       text="Prix: —"/>
+      <Label fx:id="detailSpots"       text="Participants max: —"/>
+      <Separator/>
+      <Label text="Description" style="-fx-font-weight:bold;"/>
+      <Label fx:id="detailDesc" text="—" wrapText="true" style="-fx-text-fill:#555;" VBox.vgrow="ALWAYS"/>
+    </VBox>
+  </HBox>
+
+  <HBox spacing="10" alignment="CENTER_RIGHT" minHeight="40">
+    <Button text="Ajouter"    onAction="#handleAdd"
+            style="-fx-background-color:#4CAF50;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+    <Button text="Modifier"   onAction="#handleEdit"
+            style="-fx-background-color:#2196F3;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+    <Button text="Supprimer"  onAction="#handleDelete"
+            style="-fx-background-color:#f44336;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+  </HBox>
+</VBox>
