@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="8" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.project.artconnect.ui.GalleryController">
+  <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+
+  <Label text="Galleries" style="-fx-font-size:16;-fx-font-weight:bold;"/>
+
+  <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+    <!-- Liste galeries -->
+    <VBox spacing="6" HBox.hgrow="ALWAYS">
+      <Label text="All Galleries" style="-fx-font-weight:bold;-fx-text-fill:#555;"/>
+      <TableView fx:id="galleryTable" VBox.vgrow="ALWAYS" onMouseClicked="#handleTableClick">
+        <columns>
+          <TableColumn fx:id="nameColumn"    text="Name"     prefWidth="180"/>
+          <TableColumn fx:id="addressColumn" text="Address"  prefWidth="200"/>
+          <TableColumn fx:id="ratingColumn"  text="Rating"   prefWidth="70"/>
+          <TableColumn fx:id="ownerColumn"   text="Owner"    prefWidth="130"/>
+        </columns>
+      </TableView>
+    </VBox>
+
+    <!-- Détail + expositions liées -->
+    <VBox spacing="8" prefWidth="310" minWidth="290"
+          style="-fx-background-color:#f5f5f5;-fx-border-color:#ddd;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:12;">
+      <Label text="Gallery Details" style="-fx-font-size:15;-fx-font-weight:bold;-fx-text-fill:#333;"/>
+      <Separator/>
+      <Label fx:id="detailName"    text="—" style="-fx-font-weight:bold;-fx-font-size:13;"/>
+      <Label fx:id="detailAddress" text="Address: —"       wrapText="true"/>
+      <Label fx:id="detailOwner"   text="Owner: —"/>
+      <Label fx:id="detailHours"   text="Hours: —"         wrapText="true"/>
+      <Label fx:id="detailPhone"   text="Phone: —"/>
+      <Label fx:id="detailRating"  text="Rating: —"/>
+      <Label fx:id="detailWebsite" text="Website: —"       wrapText="true"/>
+      <Separator/>
+      <Label text="Current Exhibitions" style="-fx-font-weight:bold;"/>
+      <ListView fx:id="exhibitionList" VBox.vgrow="ALWAYS" prefHeight="200"/>
+    </VBox>
+  </HBox>
+</VBox>

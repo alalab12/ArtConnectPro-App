@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="8" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.project.artconnect.ui.ExhibitionController">
+  <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+
+  <Label text="Exhibitions" style="-fx-font-size:16;-fx-font-weight:bold;"/>
+
+  <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+    <TableView fx:id="exhibitionTable" HBox.hgrow="ALWAYS" onMouseClicked="#handleTableClick">
+      <columns>
+        <TableColumn fx:id="titleColumn"    text="Title"       prefWidth="180"/>
+        <TableColumn fx:id="galleryColumn"  text="Gallery"     prefWidth="140"/>
+        <TableColumn fx:id="curatorColumn"  text="Curator"     prefWidth="130"/>
+        <TableColumn fx:id="themeColumn"    text="Theme"       prefWidth="150"/>
+        <TableColumn fx:id="startColumn"    text="Start"       prefWidth="95"/>
+        <TableColumn fx:id="endColumn"      text="End"         prefWidth="95"/>
+      </columns>
+    </TableView>
+
+    <!-- Panneau détail -->
+    <VBox spacing="8" prefWidth="290" minWidth="270"
+          style="-fx-background-color:#f5f5f5;-fx-border-color:#ddd;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:12;">
+      <Label text="Exhibition Details" style="-fx-font-size:15;-fx-font-weight:bold;-fx-text-fill:#333;"/>
+      <Separator/>
+      <Label fx:id="detailTitle"    text="—" style="-fx-font-weight:bold;-fx-font-size:13;"/>
+      <Label fx:id="detailGallery"  text="Gallery: —"   wrapText="true"/>
+      <Label fx:id="detailCurator"  text="Curator: —"/>
+      <Label fx:id="detailTheme"    text="Theme: —"     wrapText="true"/>
+      <Label fx:id="detailDates"    text="Dates: —"/>
+      <Separator/>
+      <Label text="Description" style="-fx-font-weight:bold;"/>
+      <Label fx:id="detailDesc"  text="—" wrapText="true" style="-fx-text-fill:#555;"/>
+      <Separator/>
+      <Label text="Artworks on display" style="-fx-font-weight:bold;"/>
+      <ListView fx:id="artworkList" VBox.vgrow="ALWAYS" prefHeight="160"/>
+    </VBox>
+  </HBox>
+</VBox>
