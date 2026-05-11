@@ -1,5 +1,5 @@
 -- =============================================================================
---  ArtConnect Pro – Script de création de la base de données MySQL
+--  ArtConnect Pro | Script de création de la base de données MySQL
 --  Exécuter : mysql -u root -p < artconnect_schema.sql
 -- =============================================================================
 
@@ -9,17 +9,12 @@ CREATE DATABASE IF NOT EXISTS artconnect_db
 
 USE artconnect_db;
 
--- ---------------------------------------------------------------------------
--- 1. discipline
--- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS discipline (
     id   BIGINT       AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
--- ---------------------------------------------------------------------------
--- 2. artist
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artist (
     id             BIGINT        AUTO_INCREMENT PRIMARY KEY,
     name           VARCHAR(200)  NOT NULL UNIQUE,
@@ -33,9 +28,7 @@ CREATE TABLE IF NOT EXISTS artist (
     is_active      TINYINT(1)    NOT NULL DEFAULT 1
 );
 
--- ---------------------------------------------------------------------------
--- 3. artist_discipline  (N–N)
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artist_discipline (
     artist_id     BIGINT NOT NULL,
     discipline_id BIGINT NOT NULL,
@@ -44,9 +37,7 @@ CREATE TABLE IF NOT EXISTS artist_discipline (
     FOREIGN KEY (discipline_id) REFERENCES discipline(id) ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 4. artwork
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artwork (
     id            BIGINT        AUTO_INCREMENT PRIMARY KEY,
     title         VARCHAR(300)  NOT NULL,
@@ -62,9 +53,7 @@ CREATE TABLE IF NOT EXISTS artwork (
     FOREIGN KEY (artist_id) REFERENCES artist(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 5. artwork_tag
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS artwork_tag (
     id         BIGINT       AUTO_INCREMENT PRIMARY KEY,
     artwork_id BIGINT       NOT NULL,
@@ -72,9 +61,7 @@ CREATE TABLE IF NOT EXISTS artwork_tag (
     FOREIGN KEY (artwork_id) REFERENCES artwork(id) ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 6. gallery
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS gallery (
     id            BIGINT        AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(200)  NOT NULL UNIQUE,
@@ -86,9 +73,7 @@ CREATE TABLE IF NOT EXISTS gallery (
     website       VARCHAR(300)
 );
 
--- ---------------------------------------------------------------------------
--- 7. exhibition
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS exhibition (
     id           BIGINT       AUTO_INCREMENT PRIMARY KEY,
     title        VARCHAR(300) NOT NULL UNIQUE,
@@ -101,9 +86,7 @@ CREATE TABLE IF NOT EXISTS exhibition (
     FOREIGN KEY (gallery_id) REFERENCES gallery(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 8. exhibition_artwork  (N–N)
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS exhibition_artwork (
     exhibition_id BIGINT NOT NULL,
     artwork_id    BIGINT NOT NULL,
@@ -112,9 +95,7 @@ CREATE TABLE IF NOT EXISTS exhibition_artwork (
     FOREIGN KEY (artwork_id)    REFERENCES artwork(id)    ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 9. workshop
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS workshop (
     id               BIGINT        AUTO_INCREMENT PRIMARY KEY,
     title            VARCHAR(300)  NOT NULL UNIQUE,
@@ -129,9 +110,7 @@ CREATE TABLE IF NOT EXISTS workshop (
     FOREIGN KEY (instructor_id) REFERENCES artist(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 10. community_member
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS community_member (
     id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
     name            VARCHAR(200) NOT NULL UNIQUE,
@@ -142,9 +121,7 @@ CREATE TABLE IF NOT EXISTS community_member (
     membership_type VARCHAR(50)  DEFAULT 'free'
 );
 
--- ---------------------------------------------------------------------------
--- 11. member_discipline  (N–N)
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS member_discipline (
     member_id     BIGINT NOT NULL,
     discipline_id BIGINT NOT NULL,
@@ -153,9 +130,7 @@ CREATE TABLE IF NOT EXISTS member_discipline (
     FOREIGN KEY (discipline_id) REFERENCES discipline(id)       ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------------------------
--- 12. booking
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS booking (
     id             BIGINT      AUTO_INCREMENT PRIMARY KEY,
     workshop_id    BIGINT,
@@ -166,9 +141,7 @@ CREATE TABLE IF NOT EXISTS booking (
     FOREIGN KEY (member_id)   REFERENCES community_member(id) ON DELETE SET NULL
 );
 
--- ---------------------------------------------------------------------------
--- 13. review
--- ---------------------------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS review (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id   BIGINT,
@@ -180,134 +153,73 @@ CREATE TABLE IF NOT EXISTS review (
     FOREIGN KEY (artwork_id) REFERENCES artwork(id)          ON DELETE SET NULL
 );
 
+
 -- =============================================================================
 --  Données de démonstration
 -- =============================================================================
 
--- disciplines
-INSERT IGNORE INTO discipline (name) VALUES
-    ('Painting'), ('Sculpture'), ('Photography'), ('Digital Art'), ('Music');
+USE ArtConnect;
 
--- artists
-INSERT IGNORE INTO artist (name, bio, birth_year, contact_email, city, is_active) VALUES
-    ('Leonardo Vinci',  'Renaissance master and polymath.',                                        1452, 'leo@vincistudio.it',   'Florence',    1),
-    ('Claude Monet',    'Founder of French Impressionist painting.',                              1840, 'claude@monet.fr',      'Giverny',     1),
-    ('Ansel Adams',     'American landscape photographer and environmentalist.',                   1902, 'ansel@adams.co',       'San Francisco',1),
-    ('Frida Kahlo',     'Mexican painter known for her many portraits and self-portraits.',        1907, 'frida@kahlo.mx',       'Mexico City', 1),
-    ('Auguste Rodin',   'French sculptor, founder of modern sculpture.',                          1840, 'auguste@rodin.fr',     'Paris',       1);
+-- 1. Insertion des Artistes
+INSERT INTO Artist (name, bio, birthYear, contactEmail, phone, city, website, socialMedia, isActive) VALUES
+('Elena Rostova', 'Artiste peintre contemporaine.', 1985, 'elena@art.com', '0601020304', 'Paris', 'elenart.com', '@elena_art', TRUE),
+('Marcus Dubois', 'Sculpteur métal et bois.', 1978, 'marcus@metal.com', '0611223344', 'Lyon', 'marcus-sculpt.com', '@marcus_d', TRUE),
+('Sophie Lemoine', 'Photographe minimaliste.', 1990, 'sophie@photo.com', '0622334455', 'Bordeaux', 'sophiephoto.fr', '@sophie_l', TRUE),
+('Julien Clerc', 'Artiste pluridisciplinaire', 1982, 'julien@create.com', '0633445566', 'Paris', NULL, NULL, FALSE);
 
--- artist_discipline
-INSERT IGNORE INTO artist_discipline (artist_id, discipline_id)
-SELECT a.id, d.id FROM artist a, discipline d
-WHERE (a.name='Leonardo Vinci'  AND d.name IN ('Painting','Sculpture'))
-   OR (a.name='Claude Monet'    AND d.name='Painting')
-   OR (a.name='Ansel Adams'     AND d.name='Photography')
-   OR (a.name='Frida Kahlo'     AND d.name='Painting')
-   OR (a.name='Auguste Rodin'   AND d.name='Sculpture');
+-- 2. Insertion des Disciplines
+INSERT INTO Discipline (name) VALUES ('Peinture'), ('Sculpture'), ('Photographie');
 
--- artworks
-INSERT IGNORE INTO artwork (title, creation_year, type, medium, dimensions, description, price, status, artist_id)
-SELECT 'Mona Lisa', 1503, 'Painting', 'Oil on poplar panel', '77x53 cm',
-       'Iconic portrait painted by Leonardo da Vinci.', 850000000.00, 'EXHIBITED', id
-FROM artist WHERE name='Leonardo Vinci';
+-- 3. Liaison Artist_Discipline
+INSERT INTO Artist_Discipline (artist_id, discipline_id) VALUES (1, 1), (2, 2), (3, 3), (4, 1), (4, 2);
 
-INSERT IGNORE INTO artwork (title, creation_year, type, medium, dimensions, description, price, status, artist_id)
-SELECT 'The Last Supper', 1498, 'Painting', 'Tempera on gesso', '460x880 cm',
-       'Mural depicting the last supper of Jesus with his apostles.', 450000000.00, 'EXHIBITED', id
-FROM artist WHERE name='Leonardo Vinci';
+-- 4. Insertion des Œuvres
+INSERT INTO Artwork (artist_id, title, creationYear, type, medium, dimensions, description, price, status) VALUES
+(1, 'Aube Parisienne', 2023, 'Peinture', 'Huile', '100x80cm', 'Une vue de Paris à l aube.', 1200.00, 'FOR_SALE'),
+(1, 'Reflets', 2021, 'Peinture', 'Aquarelle', '50x50cm', 'Jeu de reflets sur l eau.', 800.00, 'SOLD'),
+(2, 'Structure 01', 2024, 'Sculpture', 'Acier', '200x100x100cm', 'Sculpture monumentale.', 3500.00, 'EXHIBITED'),
+(2, 'Équilibre', 2022, 'Sculpture', 'Bois et Métal', '40x30x30cm', 'Petite sculpture de bureau.', 650.00, 'FOR_SALE'),
+(3, 'Ombres Urbaines', 2023, 'Photographie', 'Argentique', '60x40cm', 'Tirage noir et blanc.', 450.00, 'FOR_SALE'),
+(3, 'Silence', 2024, 'Photographie', 'Numérique', '90x60cm', 'Paysage minimaliste dans la neige.', 550.00, 'EXHIBITED');
 
-INSERT IGNORE INTO artwork (title, creation_year, type, medium, dimensions, description, price, status, artist_id)
-SELECT 'Water Lilies', 1919, 'Painting', 'Oil on canvas', '200x426 cm',
-       'Series of approximately 250 oil paintings by Monet.', 40000000.00, 'FOR_SALE', id
-FROM artist WHERE name='Claude Monet';
+-- 5. Insertion des Tags
+INSERT INTO ArtworkTag (name) VALUES ('Abstrait'), ('Paysage'), ('Contemporain'), ('Noir et Blanc'), ('Monumental');
 
-INSERT IGNORE INTO artwork (title, creation_year, type, medium, dimensions, description, price, status, artist_id)
-SELECT 'The Two Fridas', 1939, 'Painting', 'Oil on canvas', '173x173 cm',
-       'Double self-portrait by Frida Kahlo.', 5000000.00, 'FOR_SALE', id
-FROM artist WHERE name='Frida Kahlo';
+-- 6. Liaison Artwork_Tag
+INSERT INTO Artwork_Tag (artwork_id, tag_id) VALUES (1, 2), (1, 3), (3, 3), (3, 5), (5, 4), (6, 2), (6, 4);
 
-INSERT IGNORE INTO artwork (title, creation_year, type, medium, dimensions, description, price, status, artist_id)
-SELECT 'The Thinker', 1904, 'Sculpture', 'Bronze', 'H: 186 cm',
-       'Bronze sculpture by Auguste Rodin.', 15000000.00, 'EXHIBITED', id
-FROM artist WHERE name='Auguste Rodin';
+-- 7. Insertion des Galeries
+INSERT INTO Gallery (name, location, capacity, contactEmail, phone, rating) VALUES
+('Galerie Horizon', '12 Rue des Arts, Paris', 150, 'contact@horizon.fr', '0140506070', 4.8),
+('Lumière Noire', '8 Place Bellecour, Lyon', 80, 'hello@lumierenoire.com', '0478809010', 4.5);
 
-INSERT IGNORE INTO artwork (title, creation_year, type, medium, dimensions, description, price, status, artist_id)
-SELECT 'Monolith, The Face of Half Dome', 1927, 'Photography', 'Gelatin silver print', '40x50 cm',
-       'Iconic photograph of Half Dome by Ansel Adams.', 100000.00, 'FOR_SALE', id
-FROM artist WHERE name='Ansel Adams';
+-- 8. Insertion des Expositions
+INSERT INTO Exhibition (title, description, startDate, endDate, gallery_id) VALUES
+('Visions Contemporaines', 'Les nouveaux talents de la scène française.', '2026-05-01', '2026-06-15', 1),
+('Matière et Lumière', 'Exposition autour de la sculpture et de la photographie.', '2026-07-10', '2026-08-20', 2);
 
--- galleries
-INSERT IGNORE INTO gallery (name, address, rating) VALUES
-    ('Louvre Art House',  'Rue de Rivoli, Paris',         4.9),
-    ('The British Gallery','Great Russell St, London',    4.7),
-    ('Metropolitan Hub',  '1000 5th Ave, New York',       4.8);
+-- 9. Liaison Artwork_Exhibition
+INSERT INTO Artwork_Exhibition (artwork_id, exhibition_id) VALUES (1, 1), (3, 2), (5, 2), (6, 2);
 
--- exhibitions
-INSERT IGNORE INTO exhibition (title, start_date, end_date, gallery_id, curator_name, theme, description)
-SELECT 'Renaissance Revival',
-       DATE_SUB(CURDATE(), INTERVAL 1 MONTH),
-       DATE_ADD(CURDATE(), INTERVAL 2 MONTH),
-       g.id, 'Dr. Elena Rossi', 'Classic Renaissance',
-       'Masterpieces from the Italian Renaissance.'
-FROM gallery g WHERE g.name='Louvre Art House';
+-- 10. Insertion des Membres de la communauté
+INSERT INTO CommunityMember (name, email, birthYear, phone, city, membershipType) VALUES
+('Alice Dubois', 'alice@mail.com', 1995, '0699887766', 'Paris', 'Premium'),
+('Lucas Martin', 'lucas@mail.com', 1988, '0688776655', 'Lyon', 'Standard'),
+('Emma Petit', 'emma@mail.com', 1992, '0677665544', 'Nantes', 'Standard');
 
-INSERT IGNORE INTO exhibition (title, start_date, end_date, gallery_id, curator_name, theme, description)
-SELECT 'Sculpting the Soul',
-       DATE_SUB(CURDATE(), INTERVAL 15 DAY),
-       DATE_ADD(CURDATE(), INTERVAL 1 MONTH),
-       g.id, 'Marcus Thorne', 'Modern & Classical Sculpture',
-       'Journey through three centuries of sculpture.'
-FROM gallery g WHERE g.name='The British Gallery';
+-- 11. Insertion des Reviews (Livrées sur les Expositions dans ton modèle)
+INSERT INTO Review (rating, comment, reviewDate, member_id, exhibition_id) VALUES
+(5, 'Une exposition incroyable, très bien agencée.', '2026-05-10', 1, 1),
+(4, 'Belles œuvres mais un peu trop de monde le week-end.', '2026-07-15', 2, 2);
 
-INSERT IGNORE INTO exhibition (title, start_date, end_date, gallery_id, curator_name, theme, description)
-SELECT 'Impressionist Dreams',
-       DATE_SUB(CURDATE(), INTERVAL 2 MONTH),
-       DATE_ADD(CURDATE(), INTERVAL 3 MONTH),
-       g.id, 'Sarah Jenkins', 'Light and Color',
-       'The impressionist movement and its legacy.'
-FROM gallery g WHERE g.name='Metropolitan Hub';
+-- 12. Insertion des Ateliers (Workshops)
+INSERT INTO Workshop (title, description, startTime, durationHours, maxParticipants, price, instructor_id) VALUES
+('Initiation à la Peinture à l huile', 'Découvrez les bases avec Elena.', '2026-06-05 14:00:00', 3, 10, 45.00, 1),
+('Photographie Urbaine de Nuit', 'Sortie photo dans les rues.', '2026-06-12 21:00:00', 4, 8, 60.00, 3);
 
--- exhibition_artwork links
-INSERT IGNORE INTO exhibition_artwork (exhibition_id, artwork_id)
-SELECT e.id, a.id FROM exhibition e, artwork a
-WHERE (e.title='Renaissance Revival'  AND a.title IN ('Mona Lisa','The Last Supper'))
-   OR (e.title='Sculpting the Soul'   AND a.title='The Thinker')
-   OR (e.title='Impressionist Dreams' AND a.title='Water Lilies');
-
--- workshops
-INSERT IGNORE INTO workshop (title, date_time, duration_minutes, max_participants, price, instructor_id, location, level)
-SELECT 'Mastering Oil Painting',
-       DATE_ADD(NOW(), INTERVAL 5 DAY), 180, 10, 150.00,
-       a.id, 'Florence Studio', 'Intermediate'
-FROM artist a WHERE a.name='Leonardo Vinci';
-
-INSERT IGNORE INTO workshop (title, date_time, duration_minutes, max_participants, price, instructor_id, location, level)
-SELECT 'Impressionist Landscapes',
-       DATE_ADD(NOW(), INTERVAL 10 DAY), 180, 10, 120.00,
-       a.id, 'Giverny Gardens', 'Beginner'
-FROM artist a WHERE a.name='Claude Monet';
-
-INSERT IGNORE INTO workshop (title, date_time, duration_minutes, max_participants, price, instructor_id, location, level)
-SELECT 'Sculpting Modernity',
-       DATE_ADD(NOW(), INTERVAL 15 DAY), 180, 10, 200.00,
-       a.id, 'Paris Workshop', 'Advanced'
-FROM artist a WHERE a.name='Auguste Rodin';
-
--- community_members
-INSERT IGNORE INTO community_member (name, email, city, membership_type) VALUES
-    ('Alice Wonderland', 'alice@art.com',       'Paris',    'Premium'),
-    ('Bob Ross',         'bob@happytrees.com',   'London',   'Premium'),
-    ('Charlie Brown',    'charlie@peanuts.com',  'New York', 'free');
-
--- reviews
-INSERT IGNORE INTO review (member_id, artwork_id, rating, comment)
-SELECT m.id, a.id, 5, 'Unbelievable detail!'
-FROM community_member m, artwork a WHERE m.name='Alice Wonderland' AND a.title='Mona Lisa';
-
-INSERT IGNORE INTO review (member_id, artwork_id, rating, comment)
-SELECT m.id, a.id, 4, 'The colors are stunning.'
-FROM community_member m, artwork a WHERE m.name='Bob Ross' AND a.title='Water Lilies';
-
-INSERT IGNORE INTO review (member_id, artwork_id, rating, comment)
-SELECT m.id, a.id, 5, 'Deeply moving.'
-FROM community_member m, artwork a WHERE m.name='Charlie Brown' AND a.title='The Thinker';
+-- 13. Insertion des Réservations (Bookings)
+INSERT INTO Booking (bookingDate, paymentStatus, member_id, workshop_id) VALUES
+('2026-05-20 10:00:00', 'PAID', 1, 1),
+('2026-05-21 11:30:00', 'PAID', 2, 1),
+('2026-05-22 15:45:00', 'PENDING', 3, 1),
+('2026-06-01 09:00:00', 'PAID', 1, 2);
