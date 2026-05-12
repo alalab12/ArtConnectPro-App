@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="8" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.project.artconnect.ui.GalleryController">
+  <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+
+  <Label text="Galleries" style="-fx-font-size:16;-fx-font-weight:bold;"/>
+
+  <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+    <!-- Liste galeries -->
+    <VBox spacing="6" HBox.hgrow="ALWAYS">
+      <Label text="All Galleries" style="-fx-font-weight:bold;-fx-text-fill:#555;"/>
+      <TableView fx:id="galleryTable" VBox.vgrow="ALWAYS" onMouseClicked="#handleTableClick">
+        <columns>
+          <TableColumn fx:id="nameColumn"     text="Nom"       prefWidth="180"/>
+          <TableColumn fx:id="locationColumn" text="Adresse"   prefWidth="200"/>
+          <TableColumn fx:id="capacityColumn" text="Capacité"  prefWidth="80"/>
+          <TableColumn fx:id="ratingColumn"   text="Note"      prefWidth="80"/>
+        </columns>
+      </TableView>
+    </VBox>
+
+    <!-- Détail + expositions liées -->
+    <VBox fx:id="detailPane" spacing="8" prefWidth="310" minWidth="290"
+          style="-fx-background-color:#f5f5f5;-fx-border-color:#ddd;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:12;">
+      <Label text="Gallery Details" style="-fx-font-size:15;-fx-font-weight:bold;-fx-text-fill:#333;"/>
+      <Separator/>
+      <Label fx:id="detailName"     text="—" style="-fx-font-weight:bold;-fx-font-size:13;"/>
+      <Label fx:id="detailLocation" text="Adresse: —"   wrapText="true"/>
+      <Label fx:id="detailCapacity" text="Capacité: —"/>
+      <Label fx:id="detailEmail"    text="Email: —"     wrapText="true"/>
+      <Label fx:id="detailPhone"    text="Tél: —"/>
+      <Label fx:id="detailRating"   text="Note: —"/>
+      <Separator/>
+      <Label text="Expositions" style="-fx-font-weight:bold;"/>
+      <ListView fx:id="exhibitionList" VBox.vgrow="ALWAYS" prefHeight="200"/>
+    </VBox>
+  </HBox>
+
+  <HBox spacing="10" alignment="CENTER_RIGHT" minHeight="40">
+    <Button text="Ajouter"    onAction="#handleAdd"
+            style="-fx-background-color:#4CAF50;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+    <Button text="Modifier"   onAction="#handleEdit"
+            style="-fx-background-color:#9e5a5a;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+    <Button text="Supprimer"  onAction="#handleDelete"
+            style="-fx-background-color:#7c2d2d;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+  </HBox>
+</VBox>

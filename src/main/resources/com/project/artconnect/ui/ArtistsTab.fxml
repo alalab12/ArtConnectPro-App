@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="8.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.project.artconnect.ui.ArtistController">
+  <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+
+  <!-- Barre de recherche -->
+  <HBox spacing="8" alignment="CENTER_LEFT">
+    <TextField fx:id="searchField" promptText="Search artists..." HBox.hgrow="ALWAYS"/>
+    <ComboBox fx:id="disciplineFilter" promptText="Filter by Discipline"/>
+    <Button text="Search" onAction="#handleSearch"/>
+    <Button text="Reset"  onAction="#handleReset"/>
+  </HBox>
+
+  <!-- Tableau + panneau détail -->
+  <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+    <!-- Tableau gauche -->
+    <TableView fx:id="artistTable" HBox.hgrow="ALWAYS" onMouseClicked="#handleTableClick">
+      <columns>
+        <TableColumn fx:id="nameColumn"  text="Name"        prefWidth="160"/>
+        <TableColumn fx:id="cityColumn"  text="City"        prefWidth="110"/>
+        <TableColumn fx:id="emailColumn" text="Email"       prefWidth="180"/>
+        <TableColumn fx:id="yearColumn"  text="Birth Year"  prefWidth="80"/>
+        <TableColumn fx:id="activeColumn" text="Active"     prefWidth="60"/>
+      </columns>
+    </TableView>
+
+    <!-- Panneau détail droite -->
+    <VBox fx:id="detailPane" spacing="8" prefWidth="280" minWidth="260"
+          style="-fx-background-color:#f5f5f5;-fx-border-color:#ddd;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:12;">
+      <Label text="Artist Details" style="-fx-font-size:15;-fx-font-weight:bold;-fx-text-fill:#333;"/>
+      <Separator/>
+      <Label fx:id="detailName"       text="—" style="-fx-font-weight:bold;-fx-font-size:13;"/>
+      <Label fx:id="detailCity"       text="City: —"        wrapText="true"/>
+      <Label fx:id="detailEmail"      text="Email: —"       wrapText="true"/>
+      <Label fx:id="detailPhone"      text="Phone: —"       wrapText="true"/>
+      <Label fx:id="detailYear"       text="Born: —"/>
+      <Label fx:id="detailDisciplines" text="Disciplines: —" wrapText="true"/>
+      <Separator/>
+      <Label text="Bio" style="-fx-font-weight:bold;"/>
+      <Label fx:id="detailBio" text="—" wrapText="true" style="-fx-text-fill:#555;"/>
+      <Separator/>
+      <Label text="Artworks" style="-fx-font-weight:bold;"/>
+      <ListView fx:id="detailArtworks" prefHeight="120"/>
+    </VBox>
+  </HBox>
+
+  <!-- Boutons CRUD -->
+  <HBox spacing="10" alignment="CENTER_RIGHT" minHeight="40">
+    <Button text="Add Artist"    onAction="#handleAdd"
+            style="-fx-background-color:#4CAF50;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+    <Button text="Edit Artist"   onAction="#handleEdit"
+            style="-fx-background-color:#9e5a5a;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+    <Button text="Delete Artist" onAction="#handleDelete"
+            style="-fx-background-color:#7c2d2d;-fx-text-fill:white;-fx-font-weight:bold;-fx-padding:8 16;"/>
+  </HBox>
+</VBox>

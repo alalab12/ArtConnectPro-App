@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.artconnect.ui.MainController">
+
+    <!-- Header bar -->
+    <HBox style="-fx-background-color:#7c2d2d;" alignment="CENTER_LEFT" prefHeight="52">
+        <padding><Insets left="20" right="20"/></padding>
+        <Label text="🎨  ArtConnect Pro" style="-fx-text-fill:white;-fx-font-size:20;-fx-font-weight:bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <MenuBar style="-fx-background-color:transparent;">
+            <Menu text="File" style="-fx-text-fill:white;">
+                <MenuItem text="Quitter" onAction="#handleExit"/>
+            </Menu>
+            <Menu text="Aide" style="-fx-text-fill:white;">
+                <MenuItem text="À propos"/>
+            </Menu>
+        </MenuBar>
+    </HBox>
+
+    <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS"
+             style="-fx-tab-min-height:36;-fx-tab-max-height:36;-fx-background-color:#fef8f8;">
+        <Tab text="  Discover  ">
+            <fx:include fx:id="discover" source="DiscoverTab.fxml"/>
+        </Tab>
+        <Tab text="  Artists  ">
+            <fx:include source="ArtistsTab.fxml"/>
+        </Tab>
+        <Tab text="  Artworks  ">
+            <fx:include source="ArtworksTab.fxml"/>
+        </Tab>
+        <Tab text="  Galleries  ">
+            <fx:include source="GalleriesTab.fxml"/>
+        </Tab>
+        <Tab text="  Exhibitions  ">
+            <fx:include source="ExhibitionsTab.fxml"/>
+        </Tab>
+        <Tab text="  Workshops  ">
+            <fx:include source="WorkshopsTab.fxml"/>
+        </Tab>
+        <Tab text="  Community  ">
+            <fx:include source="CommunityTab.fxml"/>
+        </Tab>
+    </TabPane>
+
+</VBox>
