@@ -11,7 +11,7 @@
     <Label text="Featured Exhibitions &amp; Content" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
     <ScrollPane VBox.vgrow="ALWAYS">
         <FlowPane fx:id="discoverPane" hgap="20" vgap="20" prefWrapLength="1100">
-            <!-- Cards will be added programmatically -->
+           
         </FlowPane>
     </ScrollPane>
 </VBox>
