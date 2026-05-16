@@ -6,7 +6,7 @@
 
 <VBox prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.artconnect.ui.MainController">
 
-    <!-- Header bar -->
+   
     <HBox style="-fx-background-color:#7c2d2d;" alignment="CENTER_LEFT" prefHeight="52">
         <padding><Insets left="20" right="20"/></padding>
         <Label text="🎨  ArtConnect Pro" style="-fx-text-fill:white;-fx-font-size:20;-fx-font-weight:bold;"/>
