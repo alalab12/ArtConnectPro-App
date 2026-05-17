@@ -244,6 +244,17 @@ BEGIN
         SET MESSAGE_TEXT = 'La date de fin ne peut pas être antérieure à la date de début.';
     END IF;
 END //
+  
+CREATE TRIGGER Check_Dates_Exhibition_Update
+BEFORE UPDATE ON Exhibition
+FOR EACH ROW
+BEGIN
+    IF NEW.endDate < NEW.startDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La date de fin ne peut pas être antérieure à la date de début.';
+    END IF;
+END //
+
 
 CREATE TRIGGER Prevent_Overbooking
 BEFORE INSERT ON Booking
